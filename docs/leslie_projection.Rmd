@@ -41,29 +41,33 @@ Add line-by-line comments wheres prompted in the code below, explaining what eac
 # Model projections
 
 # ------ WHAT HAPPENS HERE? ------ #
-# ------ comment line-by-line ---- #
+# ----- comment line-by-line ----- #
 
-# The line below...
+# The line below... creates a sequence from 0-8 by one increment to the time in years.
 time_yr <- seq(from = 0, to = 8, by = 1)
 
-# The line below...
+# The line below... creates a 9x4 matrix where fish_year0 is the length of the column and time_yr is the length of the row
 proj_year <- matrix(ncol = length(fish_year0), nrow = length(time_yr))
 
-# The line below...
+# The line below...maps the proj_year matrix to fish_year0, populates the proj_yr matrix where the right ROW (row 1) will be populated by the initial condition of fish_yr0. only populates first row
 proj_year[1, ] <- fish_year0
 
-# The for loop below...
+# The for loop below... loops the row starting at 2 where the projection year is subtracted by 1 with each iteration. seq_along is not used bc row 1 has already been populated. starting in row two, this takes the dot product of the matrix and the row containing the vector from the previous cycle.
 for (i in 2:length(time_yr)) {
   proj_year[i,] <- fish_leslie %*% proj_year[i-1,]
 }
 
 
 # The rest is wrangling & visualization (run to check it out):
+#this reasigns the column names of proj_yr since they are unnamed
 colnames(proj_year) <- c("eggs", "fry", "juvenile", "adult")
 
+#proj_df binds together the vector of times with matrix of population projections
+#pivot_longer melts into long format from wide format. where life stage is split over 4 different columns and turns it into one column. the second column stage_population takes the values in those columns and aligns them next to each other appropriately. -time_yr excludes time_yr
 proj_df <- data.frame(time_yr, proj_year) %>% 
   pivot_longer(cols = -time_yr, names_to = "lifestage", values_to = "stage_population")
 
+#because of the pivot_longer, it only requires one geom_line to graph all different lifestages
 ggplot(data = proj_df, aes(x = time_yr, y = stage_population)) +
   geom_line(aes(color = lifestage)) +
   scale_y_log10()
@@ -71,3 +75,5 @@ ggplot(data = proj_df, aes(x = time_yr, y = stage_population)) +
 ```
 
 Test different combinations of survival / reproduction and starting population structures to see what happens! 
+
+

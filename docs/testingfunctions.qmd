@@ -51,3 +51,24 @@ expect_true(mean_range(mtcars)[2] <= mean_range(mtcars)[1])
 ```{r}
 expect_true(mean_range(mtcars)[1] <= mean_range(mtcars)[2])
 ```
+
+```{r}
+source("name_cart.R")
+## If file is not in main working directory, you can call to it with the here::here function
+```
+
+```{r}
+source(here::here("src", "name_cart.R"))
+```
+
+```{r}
+name_cart(food = "enchilada", animal = "hawk")
+```
+
+```{r}
+source(here::here("src", "cork_oak_growth.R"))
+```
+
+```{r}
+height_t2(height_t1 = 20, t1 = 4, t2 = 19)
+```
